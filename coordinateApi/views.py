@@ -1,35 +1,16 @@
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse,JsonResponse
-from rest_framework.parsers import JSONParser
+from rest_framework import generics
 from .models import Coordinates
 from .coordinateserilaizer import CoordinateSerializer
-from  .utility import nearestpairpoints
-@csrf_exempt
-def coordinate_list(request):
 
-    if request.method == 'GET':
-        coordinates = Coordinates.objects.all()
-        serializer = CoordinateSerializer(coordinates,many= True)
-        return JsonResponse(serializer.data,safe= False)
+#generic view supports GET and POST http methods/verbs.
+class  ListVIewpAPI(generics.ListCreateAPIView):
+    queryset = Coordinates.objects.all()
+    serializer_class = CoordinateSerializer
 
-
-    elif request.method=='POST':
-      
-        data = JSONParser().parse(request)
-        print(data)
-       
-        mylist1 = list(eval(data['submitted_coordinate']))
-    
-        print(list(nearestpairpoints(mylist1)))
-        print(str(list(nearestpairpoints(mylist1))))
-        #data['closet_paircoordinates'] = str(list(nearestpairpoints(mylist1)))
-        print(data)
-        serializer = CoordinateSerializer(data = data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status = 201)
-        return JsonResponse(serializer.errors,status = 400)
-
-
+#generic view which supports Retrieval of a single resource(GET) ,update(PUT) and deletion(DELETE) .
+# to get a specific resource  unique identifier(resource id) is sent together with the request e.g
+# host/api/v1/coordinates/4 , here 4 is id of the resource already created before
+class DetailedViewAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Coordinates.objects.all()
+    serializer_class = CoordinateSerializer

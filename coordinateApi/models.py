@@ -13,7 +13,12 @@ class Coordinates(models.Model):
         ordering = ['-date_created']
         verbose_name_plural = "Coordinates"
     
-    #Overriding save method to populate closet points pair column
+  
+    """  Save method is being overidden because field closet_paircoordinates need to be populated automatically 
+    by result of operations performed on field submitted_coordinate if the field contain only one point by  default, autopopulation 
+    of (submitted_x,submit_y) and origin is autopopulated"""
+
+
     def  save(self, *args, **kwargs):
         if not self.id:
             listtoworkon = list(eval(self.submitted_coordinate))
@@ -21,9 +26,8 @@ class Coordinates(models.Model):
             count = 0
             substring= '),'
             count = string.count(substring)
-            print(listtoworkon)
             if count > 0:
-                self.closet_paircoordinates = str(list(nearestpairpoints(listtoworkon)))
+                self.closet_paircoordinates = str(list(nearestpairpoints(listtoworkon))).strip('[]')
             else:
                  self.closet_paircoordinates = string + "(0 ,0)"
         super(Coordinates,self).save(*args, **kwargs)

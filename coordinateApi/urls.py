@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import coordinate_list
+from .views import ListVIewpAPI, DetailedViewAPI
 
+# path urls for coordinateApi application.
 urlpatterns = [
-    path('coordinates/',coordinate_list),
+    path('api/v1/coordinates/',ListVIewpAPI.as_view()),
+    path('api/v1/coordinates/<int:pk>/',DetailedViewAPI.as_view()),
 ]

@@ -19,5 +19,8 @@ from coordinateApi import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('coordinateApi/', include('coordinateApi.urls'))
+
+    path('', include('coordinateApi.urls')),
+   
+    path('auth-api/',include('rest_framework.urls')),  #User authentication url before accesing endpoints
 ]
